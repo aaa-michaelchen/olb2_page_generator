@@ -19,29 +19,38 @@ def get_full_path(name, ext):
     return os.path.abspath(os.path.join('.', f'{name}.{ext}'))
 
 
-def get_inputs(title, titleTwo, x):
+def get_node_contents(node_name):
     inputs = {
-        'title': title,
-        'titleTwo': titleTwo,
-        'x': x,
+        'node_name': node_name,
     }
     return inputs
 
 
-def save(data):
-    file = get_full_path('new', 'txt')
+def save(name, data):
+    file = get_full_path(name, 'txt')
     print(f'saving to {file}')
     with open(file, 'w') as fout:
         for line in data:
             fout.write(f'{line}')
 
 
+def handle_add_node_files(node_name, template):
+    load_and_save(node_name, 'base_node_template')
+
+
+def load_and_save(node_name, template):
+    src = load(template)
+    inputs = get_node_contents(node_name)
+    result = src.substitute(inputs)
+    save(node_name, result)
+
+
 def main():
     header()
-    src = load('template')
-    inputs = get_inputs('first', 'second', 'yourMom')
-    result = src.substitute(inputs)
-    save(result)
+
+    node_name = input('node name: ')
+    handle_add_node_files(node_name, 'base_node_template')
+
     print('done')
 
 

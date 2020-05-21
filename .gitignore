@@ -1,3 +1,4 @@
 *.swp
 *.txt
 *template.js
+.DS_Store
