@@ -8,48 +8,55 @@ def header():
     print('-------------------------')
 
 
-def load(name):
-    file_path = get_full_path(name, 'txt')
+def load(dest, name):
+    file_path = get_full_path(dest, f'{name}.txt')
     filein = open(file_path)
     src = Template(filein.read())
     return src
 
 
-def get_full_path(name, ext):
-    return os.path.abspath(os.path.join('.', f'{name}.{ext}'))
+def get_full_path(*args):
+    return os.path.abspath(os.path.join('.', *args))
 
 
-def get_node_contents(node_name):
-    inputs = {
+def get_node_content(node_name, flow):
+    content = {
         'node_name': node_name,
+        'flow': flow,
     }
-    return inputs
+    return content
 
 
-def save(name, data):
-    file = get_full_path(name, 'txt')
+def save(content, dest, data):
+    name = content['node_name']
+    file = get_full_path(dest, f'{name}.txt')
     print(f'saving to {file}')
     with open(file, 'w') as fout:
         for line in data:
             fout.write(f'{line}')
 
 
-def handle_add_node_files(node_name, template):
-    load_and_save(node_name, 'base_node_template')
+def handle_add_node_files(content):
+    base_node_destination_path = 'baseNode'
+    state_node_destination_path = 'stateNode'
+
+    load_and_save(content, base_node_destination_path, 'base_node_template')
+    load_and_save(content, state_node_destination_path, 'state_node_template')
 
 
-def load_and_save(node_name, template):
-    src = load(template)
-    inputs = get_node_contents(node_name)
-    result = src.substitute(inputs)
-    save(node_name, result)
+def load_and_save(content, destination_path, template):
+    src = load('templates', template)
+    result = src.substitute(content)
+    save(content, destination_path, result)
 
 
 def main():
     header()
 
     node_name = input('node name: ')
-    handle_add_node_files(node_name, 'base_node_template')
+    flow = input('which flow: ')
+    node_content = get_node_content(node_name, flow)
+    handle_add_node_files(node_content)
 
     print('done')
 
