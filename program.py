@@ -1,6 +1,7 @@
 import os
 from string import Template
-
+from dotenv import load_dotenv
+load_dotenv()
 
 def header():
     print('-------------------------')
@@ -29,7 +30,7 @@ def get_node_content(node_name, flow):
 
 def save(content, dest, data):
     name = content['node_name']
-    file = get_full_path(dest, f'{name}.txt')
+    file = get_full_path(dest, f'{name}.js')
     print(f'saving to {file}')
     with open(file, 'w') as fout:
         for line in data:
@@ -63,13 +64,38 @@ def load_and_save(content, destination_path, template):
 def main():
     header()
 
+    # new files
     node_name = input('node name: ')
-    flow = input('which flow: ')
+    # flow = input('which flow: ')
+    #
+    # node_content = get_node_content(node_name, flow)
+    #
+    # handle_add_node_files(node_content)
+    # handle_add_presentation_files(node_content)
 
-    node_content = get_node_content(node_name, flow)
 
-    handle_add_node_files(node_content)
-    handle_add_presentation_files(node_content)
+    # update index
+    # load file
+    file_path = get_full_path('.', 'index.js')
+    data = []
+    with open(file_path) as fin:
+        for line_of_code in fin.readlines():
+            if line_of_code.rstrip():
+                data.append(line_of_code.rstrip())
+    print(data)
+
+    print('#########################')
+
+    # append data
+    export_string = f"export * from './{node_name}';"
+    data.append(export_string)
+    print(data)
+
+    # update file
+    print('@@@@@@@@@@@@@@@@@@@@@@@@@@')
+    with open(file_path, 'w') as fout:
+        for line_of_code in data:
+            fout.write(f'{line_of_code}\n')
 
     print('done')
 
