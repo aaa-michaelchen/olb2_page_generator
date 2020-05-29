@@ -1,0 +1,4 @@
+import { ViewPresentation } from '@clublabs/node-flow';
+import { ${page_name} as basePresentation } from '../../Base/${flow}';
+
+export const ${page_name}: ViewPresentation = {...basePresentation};

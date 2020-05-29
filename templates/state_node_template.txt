@@ -1,0 +1,4 @@
+import { ViewNode } from '@clublabs/node-flow';
+import { ${page_name}Node as baseNode } from '../../Base/${flow}';
+
+export const ${page_name}Node: ViewNode = { ...baseNode };

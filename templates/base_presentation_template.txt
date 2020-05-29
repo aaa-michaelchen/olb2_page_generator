@@ -1,0 +1,7 @@
+import { ViewPresentation } from '@clublabs/node-flow';
+
+export const ${page_name}: ViewPresentation = {
+  id: '${page_name}',
+  title: '${page_name} coming soon!',
+  fields: [ ]
+};
