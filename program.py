@@ -4,8 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-VIEW_NODES_PATH = os.environ['VIEW_NODES_PATH']
-VIEW_PRESENTATIONS_PATH = os.environ['VIEW_PRESENTATIONS_PATH']
+GRAPH_PATH = os.environ['GRAPH_PATH']
 
 def header():
     print('-------------------------')
@@ -13,39 +12,43 @@ def header():
     print('-------------------------')
 
 
-def get_content(page_name, flow):
+def get_content(page_name):
     content = {
         'page_name': page_name,
-        'flow': flow,
     }
     return content
 
 
-def handle_add_files(content):
-    base_node_full_path = VIEW_NODES_PATH + 'Base/' + content['flow']
-    base_presentation_full_path = VIEW_PRESENTATIONS_PATH + 'Base/' + content['flow']
+def get_file_path(flow, version):
+    return f'{GRAPH_PATH}{flow}/{version}/'
 
+
+def handle_add_files(content, path):
     file_type = input('What file type? [N]ode, [P]resentation, or [B]oth: ')
     state = input('What state? [CA], [TX], or [B]oth: ')
 
     if file_type == 'B':
-        process_update(content, base_node_full_path, 'base_node_template')
-        handle_add_state_files(content, VIEW_NODES_PATH, state, 'state_node_template')
-
-        process_update(content, base_presentation_full_path, 'base_presentation_template')
-        handle_add_state_files(content, VIEW_PRESENTATIONS_PATH, state, 'state_presentation_template')
+        add_node_files(content, path, state)
+        add_presentation_files(content, path, state)
     elif file_type == 'N':
-        process_update(content, base_node_full_path, 'base_node_template')
-        handle_add_state_files(content, VIEW_NODES_PATH, state, 'state_node_template')
-
+        add_node_files(content, path, state)
     elif file_type == 'P':
-        process_update(content, base_presentation_full_path, 'base_presentation_template')
-        handle_add_state_files(content, VIEW_PRESENTATIONS_PATH, state, 'state_presentation_template')
+        add_presentation_files(content, path, state)
 
 
-def handle_add_state_files(content, destination_base_path, state, template):
-    ca_full_path = destination_base_path + 'CA/' + content['flow']
-    tx_full_path = destination_base_path + 'TX/' + content['flow']
+def add_node_files(content, path, state):
+    process_update(content, f'{path}Base/nodes', 'base_node_template')
+    handle_add_state_files(content, path, state, 'nodes', 'state_node_template')
+
+
+def add_presentation_files(content, path, state):
+    process_update(content, f'{path}Base/presentations', 'base_presentation_template')
+    handle_add_state_files(content, path, state, 'presentations', 'state_presentation_template')
+
+
+def handle_add_state_files(content, path, state, file_type, template):
+    ca_full_path = f'{path}CA/{file_type}'
+    tx_full_path = f'{path}TX/{file_type}'
 
     if state == 'B':
         process_update(content, ca_full_path, template)
@@ -122,10 +125,12 @@ def main():
     header()
 
     page_name = input('page name: ')
-    flow = input('which flow (ie. discountFlow): ')
+    flow = input('which flow (ie. driver, coverage, etc...): ')
+    version = input('which version (ie. default, excludeDriver, etc...): ')
 
-    content = get_content(page_name, flow)
-    handle_add_files(content)
+    content = get_content(page_name)
+    file_path = get_file_path(flow, version)
+    handle_add_files(content, file_path)
 
     print('done')
 

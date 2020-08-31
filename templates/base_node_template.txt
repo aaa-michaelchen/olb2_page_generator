@@ -1,5 +1,7 @@
-import { EvaluatorType } from '../../../../../enums';
-import { ViewNode } from '@clublabs/node-flow';
+import {
+  ViewNode,
+  EvaluatorType
+} from '@clublabs/node-flow';
 
 export const ${page_name}Node: ViewNode = {
   id: '${page_name}',
